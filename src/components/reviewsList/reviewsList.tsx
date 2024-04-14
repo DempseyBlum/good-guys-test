@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import style from "./reviewsList.module.css";
 import { Review } from "./reviewsList.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 enum SortType {
   mostRecent = "mostRecent",
@@ -12,15 +12,15 @@ enum SortType {
 
 // Paginated reviews list with sorting.
 export default function ReviewsList({ reviews }: { reviews: Review[] }) {
+  // Sorting variables
+  const [sortType, setSortType] = useState(SortType.highestRating);
+
   // Pagination variables
   const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 8;
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   let currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-
-  // Sorting variables
-  const [sortType, setSortType] = useState(SortType.highestRating);
 
   function NextPage() {
     // Check if there are more reviews to show
@@ -32,15 +32,49 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   }
 
+  // Sorting logic
+  useEffect(() => {
+    switch (sortType) {
+      case SortType.mostRecent:
+        console.log("mostRecent");
+        currentReviews = reviews
+          .slice()
+          .sort(
+            (a, b) =>
+              new Date(b.SUBMISSION_DATE).getTime() -
+              new Date(a.SUBMISSION_DATE).getTime()
+          )
+          .slice(indexOfFirstReview, indexOfLastReview);
+        console.log(currentReviews);
+        break;
+      case SortType.highestRating:
+        currentReviews = reviews
+          .slice()
+          .sort((a, b) => b.RATING - a.RATING)
+          .slice(indexOfFirstReview, indexOfLastReview);
+        break;
+      case SortType.lowestRating:
+        currentReviews = reviews
+          .slice()
+          .sort((a, b) => a.RATING - b.RATING)
+          .slice(indexOfFirstReview, indexOfLastReview);
+        break;
+    }
+  }, [sortType]);
+
+  function handleSortChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setSortType(event.target.value as SortType);
+  }
+
   return (
     <div className={style.reviewsList}>
       <div className={style.reviewsListControls}>
         <div className={style.sortBy}>
           <label>Sort by:</label>
-          <select>
-            <option value="mostRecent">Most recent</option>
-            <option value="highestRating">Highest rating</option>
-            <option value="lowestRating">Lowest rating</option>
+          <select onChange={handleSortChange}>
+            <option value={SortType.mostRecent}>Most recent</option>
+            <option value={SortType.highestRating}>Highest rating</option>
+            <option value={SortType.lowestRating}>Lowest rating</option>
           </select>
         </div>
         <div className={style.pagination}>
