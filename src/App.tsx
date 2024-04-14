@@ -10,9 +10,22 @@ function App() {
     fetch("./reviews.json")
       .then((res) => res.json())
       .then((data) => {
-        setReviews(data as ReviewType[]);
+        setReviews(FilterReviews(data as ReviewType[]));
       });
   };
+
+  function FilterReviews(reviews: ReviewType[]) {
+    // Check if the review has required information, without any of these values the review is invalid
+    // If there is no title or text then the review is empty and doesn't need to be displayed
+    return reviews.filter(
+      (review: ReviewType) =>
+        review.REVIEW_HDR_ID &&
+        (review.REVIEW_TITLE !== "" || review.REVIEW_TEXT !== "") &&
+        review.RATING &&
+        review.CUSTOMER_NAME !== "" &&
+        review.SUBMISSION_DATE !== ""
+    );
+  }
 
   useEffect(() => {
     getReviews();
