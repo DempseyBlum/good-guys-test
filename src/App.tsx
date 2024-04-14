@@ -18,10 +18,6 @@ function App() {
     getReviews();
   }, []);
 
-  useEffect(() => {
-    console.log(reviews);
-  }, [reviews]);
-
   return (
     <div className="App">
       <header className="App-header">

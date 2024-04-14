@@ -94,7 +94,7 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
                 </div>
               </div>
               <div className={style.reviewBody}>
-                <p>{review.REVIEW_TEXT}</p>
+                <p className={style.reviewText}>{review.REVIEW_TEXT}</p>
               </div>
               <div className={style.reviewFooter}>
                 <p>
