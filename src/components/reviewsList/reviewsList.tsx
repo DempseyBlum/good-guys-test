@@ -18,7 +18,7 @@ export default function ReviewsList({ reviews }: { reviews: ReviewType[] }) {
 
   // Pagination variables
   const [currentPage, setCurrentPage] = useState(1);
-  const reviewsPerPage = 8;
+  const [reviewsPerPage, setReviewsPerPage] = useState(8);
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
   const [currentReviews, setCurrentReviews] = useState(reviews);
@@ -31,6 +31,10 @@ export default function ReviewsList({ reviews }: { reviews: ReviewType[] }) {
 
   function PreviousPage() {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
+  }
+
+  function LoadMore() {
+    setReviewsPerPage(reviewsPerPage + 10);
   }
 
   // Sorting logic
@@ -84,6 +88,11 @@ export default function ReviewsList({ reviews }: { reviews: ReviewType[] }) {
             <Review review={review} />
           ))}
       </ul>
+      <div className={style.loadMoreWrapper}>
+        <button onClick={LoadMore} disabled={reviewsPerPage > reviews.length}>
+          Load More
+        </button>
+      </div>
     </div>
   );
 }

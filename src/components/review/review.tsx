@@ -21,7 +21,7 @@ export default function Review({ review }: { review: ReviewType }) {
         </div>
         <div className={style.reviewFooter}>
           <p>
-            <span>{review.CUSTOMER_NAME}</span>
+            <div>{review.CUSTOMER_NAME}</div>
             <span>{review.SUBMISSION_DATE}</span>
           </p>
         </div>
