@@ -20,7 +20,7 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
   const reviewsPerPage = 8;
   const indexOfLastReview = currentPage * reviewsPerPage;
   const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-  let currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+  const [currentReviews, setCurrentReviews] = useState(reviews);
 
   function NextPage() {
     // Check if there are more reviews to show
@@ -34,30 +34,24 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
 
   // Sorting logic
   useEffect(() => {
+    // Copy the current reviews to avoid mutating the original array
+    const reviewsToSort = [...currentReviews];
     switch (sortType) {
       case SortType.mostRecent:
         console.log("mostRecent");
-        currentReviews = reviews
-          .slice()
-          .sort(
+        setCurrentReviews(
+          reviewsToSort.sort(
             (a, b) =>
               new Date(b.SUBMISSION_DATE).getTime() -
               new Date(a.SUBMISSION_DATE).getTime()
           )
-          .slice(indexOfFirstReview, indexOfLastReview);
-        console.log(currentReviews);
+        );
         break;
       case SortType.highestRating:
-        currentReviews = reviews
-          .slice()
-          .sort((a, b) => b.RATING - a.RATING)
-          .slice(indexOfFirstReview, indexOfLastReview);
+        setCurrentReviews(reviewsToSort.sort((a, b) => b.RATING - a.RATING));
         break;
       case SortType.lowestRating:
-        currentReviews = reviews
-          .slice()
-          .sort((a, b) => a.RATING - b.RATING)
-          .slice(indexOfFirstReview, indexOfLastReview);
+        setCurrentReviews(reviewsToSort.sort((a, b) => a.RATING - b.RATING));
         break;
     }
   }, [sortType]);
@@ -83,28 +77,30 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
         </div>
       </div>
       <ul>
-        {currentReviews.map((review) => (
-          <li className={style.reviewWrapper} key={review.REVIEW_HDR_ID}>
-            <div className={style.review}>
-              <div className={style.reviewHeader}>
-                <h2>{review.REVIEW_TITLE}</h2>
-                <div className={style.rating}>
-                  <FontAwesomeIcon icon={faStar} />
-                  <span>{review.RATING}</span>
+        {currentReviews
+          .slice(indexOfFirstReview, indexOfLastReview)
+          .map((review) => (
+            <li className={style.reviewWrapper} key={review.REVIEW_HDR_ID}>
+              <div className={style.review}>
+                <div className={style.reviewHeader}>
+                  <h2>{review.REVIEW_TITLE}</h2>
+                  <div className={style.rating}>
+                    <FontAwesomeIcon icon={faStar} />
+                    <span>{review.RATING}</span>
+                  </div>
+                </div>
+                <div className={style.reviewBody}>
+                  <p className={style.reviewText}>{review.REVIEW_TEXT}</p>
+                </div>
+                <div className={style.reviewFooter}>
+                  <p>
+                    <span>{review.CUSTOMER_NAME}</span>
+                    <span>{review.SUBMISSION_DATE}</span>
+                  </p>
                 </div>
               </div>
-              <div className={style.reviewBody}>
-                <p className={style.reviewText}>{review.REVIEW_TEXT}</p>
-              </div>
-              <div className={style.reviewFooter}>
-                <p>
-                  <span>{review.CUSTOMER_NAME}</span>
-                  <span>{review.SUBMISSION_DATE}</span>
-                </p>
-              </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))}
       </ul>
     </div>
   );
