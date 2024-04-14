@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import style from "./reviewsList.module.css";
-import { Review } from "./reviewsList.types";
+import { ReviewType } from "./reviewsList.types";
 import { useEffect, useState } from "react";
+import Review from "../review/review";
 
 enum SortType {
   mostRecent = "mostRecent",
@@ -11,7 +12,7 @@ enum SortType {
 }
 
 // Paginated reviews list with sorting.
-export default function ReviewsList({ reviews }: { reviews: Review[] }) {
+export default function ReviewsList({ reviews }: { reviews: ReviewType[] }) {
   // Sorting variables
   const [sortType, setSortType] = useState(SortType.highestRating);
 
@@ -80,26 +81,7 @@ export default function ReviewsList({ reviews }: { reviews: Review[] }) {
         {currentReviews
           .slice(indexOfFirstReview, indexOfLastReview)
           .map((review) => (
-            <li className={style.reviewWrapper} key={review.REVIEW_HDR_ID}>
-              <div className={style.review}>
-                <div className={style.reviewHeader}>
-                  <h2>{review.REVIEW_TITLE}</h2>
-                  <div className={style.rating}>
-                    <FontAwesomeIcon icon={faStar} />
-                    <span>{review.RATING}</span>
-                  </div>
-                </div>
-                <div className={style.reviewBody}>
-                  <p className={style.reviewText}>{review.REVIEW_TEXT}</p>
-                </div>
-                <div className={style.reviewFooter}>
-                  <p>
-                    <span>{review.CUSTOMER_NAME}</span>
-                    <span>{review.SUBMISSION_DATE}</span>
-                  </p>
-                </div>
-              </div>
-            </li>
+            <Review review={review} />
           ))}
       </ul>
     </div>

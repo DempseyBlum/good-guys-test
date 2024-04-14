@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import ReviewsList from "./components/reviewsList/reviewsList";
-import { Review } from "./components/reviewsList/reviewsList.types";
+import { ReviewType } from "./components/reviewsList/reviewsList.types";
 
 function App() {
-  const [reviews, setReviews] = React.useState<Review[]>([]);
+  const [reviews, setReviews] = React.useState<ReviewType[]>([]);
 
   const getReviews = () => {
     fetch("./reviews.json")
       .then((res) => res.json())
       .then((data) => {
-        setReviews(data as Review[]);
+        setReviews(data as ReviewType[]);
       });
   };
 

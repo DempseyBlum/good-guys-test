@@ -1,6 +1,6 @@
 // Using a simple type with no validation due to the static nature of the data
 // Could use a JSON schema validator like Zod to validate the data before passing it to the component
-export type Review = {
+export type ReviewType = {
   REVIEW_HDR_ID: number;
   PRODUCT_ID: number;
   PROD_NBR: number;
